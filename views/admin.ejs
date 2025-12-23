@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Panel Admina – QD-STUDIO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <h1>Panel Admina</h1>
+  <% if (!loggedIn) { %>
+    <div class="login-island">
+      <form method="POST" action="/login" class="login-form">
+        <input type="text" name="username" placeholder="Login" required />
+        <input type="password" name="password" placeholder="Hasło" required />
+        <button type="submit">🔐 Zaloguj</button>
+        <% if (error) { %>
+          <div class="error-msg"><%= error %></div>
+        <% } %>
+      </form>
+    </div>
+  <% } else { %>
+    <div class="admin-panel">
+      <div class="grid">
+        <% products.forEach(p => {
+          const s = status[p.id] || {};
+        %>
+          <div class="card">
+            <h2><%= p.title %></h2>
+            <div class="switch-group">
+              <span>Ukryj</span>
+              <label class="switch">
+                <input type="checkbox" data-id="<%= p.id %>" data-key="hidden" <%= s.hidden ? 'checked' : '' %> />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="switch-group">
+              <span>Niedostępny</span>
+              <label class="switch">
+                <input type="checkbox" data-id="<%= p.id %>" data-key="unavailable" <%= s.unavailable ? 'checked' : '' %> />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+      <div class="admin-actions">
+        <form method="POST" action="/logout">
+          <button class="logout">🚪 Wyloguj</button>
+        </form>
+      </div>
+    </div>
+    <script>
+      const switches = document.querySelectorAll('input[type="checkbox"]');
+      switches.forEach(sw => {
+        sw.addEventListener('change', async () => {
+          const id = sw.dataset.id;
+          const key = sw.dataset.key;
+          const value = sw.checked;
+          const res = await fetch('/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              data: { [id]: { [key]: value } }
+            })
+          });
+          const json = await res.json();
+          if (!json.ok) {
+            alert("❌ Błąd zapisu: " + (json.error || "nieznany"));
+          }
+        });
+      });
+    </script>
+  <% } %>
+</body>
+</html>
