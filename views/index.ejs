@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <title>QD-STUDIO – Oferta</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/style.css" />
+  <style>
+    .card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding-bottom: 70px;
+    }
+    .card-content {
+      flex-grow: 1;
+    }
+    .fixed-btn {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #3b82f6, #a855f7);
+      color: #f9fafb;
+      text-decoration: none;
+      font-weight: 600;
+      box-shadow: 0 0 15px rgba(129, 140, 248, 0.5);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .fixed-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 25px rgba(129, 140, 248, 0.8);
+    }
+  </style>
+</head>
+<body>
+  <h1>QD-STUDIO – Oferta</h1>
+  <div class="grid">
+    <% products.forEach(p => {
+      const s = status[p.id] || {};
+      if (s.hidden) return;
+    %>
+      <div class="card <%= s.unavailable ? 'unavailable' : '' %>">
+        <div class="card-content">
+          <h2>
+            <% if (/bot/i.test(p.title)) { %>🤖 
+            <% } else if (/plugin/i.test(p.title)) { %>🧩 
+            <% } else if (/strona|www/i.test(p.title)) { %>🌐 
+            <% } else if (/skrypt/i.test(p.title)) { %>🧾 
+            <% } else if (/serwer/i.test(p.title)) { %>🖥️ 
+            <% } else if (/konfiguracja/i.test(p.title)) { %>⚙️ 
+            <% } else if (/ranga/i.test(p.title)) { %>🎖️ 
+            <% } else if (/premium/i.test(p.title)) { %>💎 
+            <% } %>
+            <%= p.title %>
+          </h2>
+          <p>Status: <strong><%= s.unavailable ? 'NIEDOSTĘPNY' : 'Dostępny' %></strong></p>
+        </div>
+        <a href="https://discord.gg/p7kC8T6KFH" class="fixed-btn" target="_blank">Wybierz pakiet</a>
+      </div>
+    <% }) %>
+  </div>
+</body>
+</html>
