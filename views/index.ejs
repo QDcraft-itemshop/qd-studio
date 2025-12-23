@@ -49,8 +49,6 @@
     <% products.forEach(p => {
       const s = status[p.id] || {};
       if (s.hidden) return;
-
-      const data = services.find(x => x.title === p.title) || {};
     %>
 
       <div class="card <%= s.unavailable ? 'unavailable' : '' %>">
@@ -72,22 +70,18 @@
 
           <p>Status: <strong><%= s.unavailable ? 'NIEDOSTĘPNY' : 'Dostępny' %></strong></p>
 
-          <% if (data.price) { %>
-            <p><strong>Cena: <%= data.price %></strong></p>
-          <% } %>
+          <p><strong>Cena: <%= p.price %></strong></p>
 
-          <% if (data.features && data.features.length > 0) { %>
-            <ul>
-              <% data.features.forEach(f => { %>
-                <li><%= f %></li>
-              <% }) %>
-            </ul>
-          <% } %>
+          <ul>
+            <% p.features.forEach(f => { %>
+              <li><%= f %></li>
+            <% }) %>
+          </ul>
 
         </div>
 
         <a href="https://discord.gg/p7kC8T6KFH" class="fixed-btn" target="_blank">
-          <%= data.button || "Wybierz pakiet" %>
+          Wybierz pakiet
         </a>
       </div>
 
