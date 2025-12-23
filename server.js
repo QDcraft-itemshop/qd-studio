@@ -28,23 +28,12 @@ app.use(
   })
 );
 
-// Produkty widoczne w panelu
+// ----------------------
+// NOWA, UPROSZCZONA TABLICA PRODUKTÓW
+// ----------------------
 const PRODUCTS = [
-  { id: "product-1", title: "Podstawowa Konfiguracja" },
-  { id: "product-2", title: "Pakiet Serwer DC" },
-  { id: "product-3", title: "Bot Autorski" },
-  { id: "product-4", title: "Bot Anty-Nuke" },
-  { id: "product-5", title: "Własna Strona WWW" },
-  { id: "product-6", title: "Pluginy Minecraft" },
-  { id: "product-7", title: "Skrypt FiveM" },
-  { id: "product-9", title: "Ranga Premium" },
-  { id: "product-10", title: "Ranga Premium Plus" },
-  { id: "product-11", title: "Ranga Premium Ultra" }
-];
-
-// Dane usług (opisy + ceny z grafik)
-const SERVICES = [
   {
+    id: "product-1",
     title: "Podstawowa Konfiguracja",
     price: "15–30 zł",
     features: [
@@ -52,10 +41,10 @@ const SERVICES = [
       "Moderacja i muzyka",
       "Konfiguracja pod serwer",
       "Wsparcie 48h"
-    ],
-    button: "Zamów Teraz"
+    ]
   },
   {
+    id: "product-2",
     title: "Pakiet Serwer DC",
     price: "25–50 zł",
     features: [
@@ -63,10 +52,10 @@ const SERVICES = [
       "Wszystkie boty + backup",
       "Role, kanały, permisje",
       "Bonus: banner + ikona"
-    ],
-    button: "Wybierz Pakiet"
+    ]
   },
   {
+    id: "product-3",
     title: "Bot Autorski",
     price: "40–130 zł",
     features: [
@@ -74,10 +63,10 @@ const SERVICES = [
       "Ekonomia, gry, API",
       "Panel web (opcja)",
       "Pełne prawa + kod"
-    ],
-    button: "Zapytaj o Szczegóły"
+    ]
   },
   {
+    id: "product-4",
     title: "Bot Anty-Nuke",
     price: "10 zł",
     features: [
@@ -88,10 +77,10 @@ const SERVICES = [
       "Backup + logi",
       "Slash komendy",
       "Podstawowa ochrona"
-    ],
-    button: "Zabezpiecz Teraz"
+    ]
   },
   {
+    id: "product-5",
     title: "Własna Strona WWW",
     price: "15–25 zł",
     features: [
@@ -100,10 +89,10 @@ const SERVICES = [
       "Szybkie ładowanie",
       "Pełna personalizacja",
       "Hosting w cenie (opcja)"
-    ],
-    button: "Zamów Stronę"
+    ]
   },
   {
+    id: "product-6",
     title: "Pluginy Minecraft",
     price: "15–25 zł",
     features: [
@@ -112,24 +101,17 @@ const SERVICES = [
       "Ekonomia, minigry, systemy",
       "Optymalizacja wydajności",
       "Pełna dokumentacja"
-    ],
-    button: "Zamów Plugin"
+    ]
   }
 ];
 
 // ---------------------- ROUTING ----------------------
 
-// Strona główna
 app.get("/", async (req, res) => {
   const status = await fs.readJson(STATUS_FILE);
-  res.render("index", {
-    products: PRODUCTS,
-    status,
-    services: SERVICES
-  });
+  res.render("index", { products: PRODUCTS, status });
 });
 
-// Panel admina
 app.get("/admin", async (req, res) => {
   const status = await fs.readJson(STATUS_FILE);
   const error = req.session.loginError;
@@ -143,7 +125,6 @@ app.get("/admin", async (req, res) => {
   });
 });
 
-// Logowanie
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
@@ -157,14 +138,12 @@ app.post("/login", (req, res) => {
   res.redirect("/admin");
 });
 
-// Wylogowanie
 app.post("/logout", (req, res) => {
   req.session.destroy(() => {
     res.redirect("/admin");
   });
 });
 
-// Aktualizacja status.json
 app.post("/update", async (req, res) => {
   if (!req.session.isAdmin)
     return res.status(401).json({ error: "Brak autoryzacji" });
@@ -187,7 +166,6 @@ app.post("/update", async (req, res) => {
   }
 });
 
-// Start serwera
 app.listen(PORT, () => {
   console.log(`✅ Serwer działa na http://localhost:${PORT}`);
 });
