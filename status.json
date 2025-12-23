@@ -1,12 +1,14 @@
 {
-  "product-1": { "unavailable": false, "hidden": false },
-  "product-2": { "unavailable": false, "hidden": false },
-  "product-3": { "unavailable": false, "hidden": false },
-  "product-4": { "unavailable": false, "hidden": false },
-  "product-5": { "unavailable": false, "hidden": false },
-  "product-6": { "unavailable": false, "hidden": false },
-  "product-7": { "unavailable": false, "hidden": false },
-  "product-9": { "unavailable": false, "hidden": false },
-  "product-10": { "unavailable": false, "hidden": false },
-  "product-11": { "unavailable": false, "hidden": false }
+  "data": {
+    "product-11": {
+      "hidden": false
+    }
+  },
+  "product-11": {
+    "unavailable": false,
+    "hidden": false
+  },
+  "product-2": {
+    "hidden": false
+  }
 }
