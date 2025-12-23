@@ -4,7 +4,7 @@ const fs = require("fs-extra");
 const path = require("path");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 const ADMIN_PASSWORD = "qd-admin-2025";
 const ADMIN_LOGIN = "qdstudio";
@@ -29,7 +29,7 @@ app.use(
 );
 
 // ----------------------
-// NOWA, UPROSZCZONA TABLICA PRODUKTÓW
+// UZUPEŁNIONA TABLICA PRODUKTÓW
 // ----------------------
 const PRODUCTS = [
   {
@@ -101,6 +101,51 @@ const PRODUCTS = [
       "Ekonomia, minigry, systemy",
       "Optymalizacja wydajności",
       "Pełna dokumentacja"
+    ]
+  },
+  {
+    id: "product-7",
+    title: "Skrypt FiveM",
+    price: "20–60 zł",
+    features: [
+      "Skrypt pisany pod Twój serwer",
+      "Optymalizacja pod wydajność",
+      "Integracja z ESX / QB-Core",
+      "Konfiguracja + instalacja",
+      "Możliwość rozbudowy na życzenie"
+    ]
+  },
+  {
+    id: "product-9",
+    title: "Ranga Premium",
+    price: "10 zł",
+    features: [
+      "Specjalna rola na Discordzie",
+      "Dostęp do kanałów premium",
+      "Priorytetowe wsparcie",
+      "Unikalny kolor nicku"
+    ]
+  },
+  {
+    id: "product-10",
+    title: "Ranga Premium Plus",
+    price: "20 zł",
+    features: [
+      "Wszystko z rangi Premium",
+      "Dostęp do ekskluzywnych materiałów",
+      "Wcześniejszy dostęp do nowych usług",
+      "Wyższy priorytet wsparcia"
+    ]
+  },
+  {
+    id: "product-11",
+    title: "Ranga Premium Ultra",
+    price: "35 zł",
+    features: [
+      "Wszystko z Premium Plus",
+      "Indywidualny kanał głosowy",
+      "Specjalny badge na serwerze",
+      "Najwyższy priorytet wsparcia 24/7"
     ]
   }
 ];
