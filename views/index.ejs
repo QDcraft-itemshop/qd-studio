@@ -46,12 +46,11 @@
 
   <div class="grid">
 
-    <% products.forEach(p => {
-      const s = status[p.id] || {};
-      if (s.hidden) return;
+    <% Object.entries(products).forEach(([id, p]) => {
+      if (p.hidden) return;
     %>
 
-      <div class="card <%= s.unavailable ? 'unavailable' : '' %>">
+      <div class="card <%= p.unavailable ? 'unavailable' : '' %>">
         <div class="card-content">
 
           <h2>
@@ -68,20 +67,22 @@
             <%= p.title %>
           </h2>
 
-          <p>Status: <strong><%= s.unavailable ? 'NIEDOSTĘPNY' : 'Dostępny' %></strong></p>
+          <p>Status: <strong><%= p.unavailable ? 'NIEDOSTĘPNY' : 'Dostępny' %></strong></p>
 
           <p><strong>Cena: <%= p.price %></strong></p>
 
-          <ul>
-            <% p.features.forEach(f => { %>
-              <li><%= f %></li>
-            <% }) %>
-          </ul>
+          <% if (Array.isArray(p.features) && p.features.length) { %>
+            <ul>
+              <% p.features.forEach(f => { %>
+                <li><%= f %></li>
+              <% }) %>
+            </ul>
+          <% } %>
 
         </div>
 
         <a href="https://discord.gg/p7kC8T6KFH" class="fixed-btn" target="_blank">
-          Wybierz pakiet
+          <%= p.buttonText || "Wybierz pakiet" %>
         </a>
       </div>
 

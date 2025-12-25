@@ -6,44 +6,151 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="/style.css" />
 </head>
+
 <body>
   <h1>Panel Admina</h1>
+
   <% if (!loggedIn) { %>
+
+    <!-- LOGOWANIE -->
     <div class="login-island">
       <form method="POST" action="/login" class="login-form">
         <input type="text" name="username" placeholder="Login" required />
         <input type="password" name="password" placeholder="Hasło" required />
         <button type="submit">🔐 Zaloguj</button>
+
         <% if (error) { %>
           <div class="error-msg"><%= error %></div>
         <% } %>
       </form>
     </div>
+
   <% } else { %>
+
+    <!-- PANEL ADMINA -->
     <div class="admin-panel">
       <div class="grid">
-        <% products.forEach(p => {
-          const s = status[p.id] || {};
-        %>
+
+        <% Object.entries(products).forEach(([id, p]) => { %>
           <div class="card">
-            <h2><%= p.title %></h2>
+
+            <h2><%= p.title && p.title.length ? p.title : ("Produkt: " + id) %></h2>
+
+            <!-- NAZWA -->
+            <label>
+              <span>Nazwa:</span>
+              <input
+                type="text"
+                class="premium-input prod-input"
+                data-id="<%= id %>"
+                data-field="title"
+                value="<%= p.title %>"
+              />
+            </label>
+
+            <!-- CENA -->
+            <label>
+              <span>Cena:</span>
+              <input
+                type="text"
+                class="premium-input prod-input"
+                data-id="<%= id %>"
+                data-field="price"
+                value="<%= p.price %>"
+              />
+            </label>
+
+            <!-- TEKST PRZYCISKU -->
+            <label>
+              <span>Tekst przycisku:</span>
+              <input
+                type="text"
+                class="premium-input prod-input"
+                data-id="<%= id %>"
+                data-field="buttonText"
+                value="<%= p.buttonText || '' %>"
+              />
+            </label>
+
+            <!-- OPIS / FEATURES -->
+            <label>
+              <span>Opis (każda linia = osobny punkt):</span>
+              <textarea
+                class="premium-textarea prod-textarea"
+                data-id="<%= id %>"
+                data-field="features"
+                rows="5"
+              ><%= Array.isArray(p.features) ? p.features.join('\n') : '' %></textarea>
+            </label>
+
+            <!-- SWITCH: HIDDEN -->
             <div class="switch-group">
               <span>Ukryj</span>
               <label class="switch">
-                <input type="checkbox" data-id="<%= p.id %>" data-key="hidden" <%= s.hidden ? 'checked' : '' %> />
+                <input
+                  type="checkbox"
+                  class="prod-switch"
+                  data-id="<%= id %>"
+                  data-field="hidden"
+                  <%= p.hidden ? 'checked' : '' %>
+                />
                 <span class="slider"></span>
               </label>
             </div>
+
+            <!-- SWITCH: UNAVAILABLE -->
             <div class="switch-group">
               <span>Niedostępny</span>
               <label class="switch">
-                <input type="checkbox" data-id="<%= p.id %>" data-key="unavailable" <%= s.unavailable ? 'checked' : '' %> />
+                <input
+                  type="checkbox"
+                  class="prod-switch"
+                  data-id="<%= id %>"
+                  data-field="unavailable"
+                  <%= p.unavailable ? 'checked' : '' %>
+                />
                 <span class="slider"></span>
               </label>
             </div>
+
+            <!-- USUWANIE PRODUKTU -->
+            <div class="admin-actions" style="margin-top: 20px; justify-content: flex-start;">
+              <button
+                type="button"
+                class="logout"
+                style="background: linear-gradient(135deg, #ef4444, #b91c1c); box-shadow: 0 0 15px rgba(248, 113, 113, 0.6);"
+                data-delete-id="<%= id %>"
+              >
+                🗑 Usuń produkt
+              </button>
+            </div>
+
           </div>
         <% }) %>
+
+        <!-- KAFEL "DODAJ PRODUKT" -->
+        <div
+          class="card"
+          id="add-card"
+          style="
+            opacity: 0.7;
+            border-style: dashed;
+            border-color: rgba(251, 146, 60, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+          "
+        >
+          <div style="text-align:center; color:#fed7aa;">
+            <div style="font-size:48px; line-height:1;">+</div>
+            <div>Dodaj nowy produkt</div>
+          </div>
+        </div>
+
       </div>
+
+      <!-- WYLOGOWANIE -->
       <div class="admin-actions">
         <form method="POST" action="/logout">
           <button class="logout">🚪 Wyloguj</button>
@@ -51,26 +158,86 @@
       </div>
     </div>
     <script>
-      const switches = document.querySelectorAll('input[type="checkbox"]');
-      switches.forEach(sw => {
-        sw.addEventListener('change', async () => {
-          const id = sw.dataset.id;
-          const key = sw.dataset.key;
-          const value = sw.checked;
-          const res = await fetch('/update', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              data: { [id]: { [key]: value } }
-            })
-          });
-          const json = await res.json();
-          if (!json.ok) {
-            alert("❌ Błąd zapisu: " + (json.error || "nieznany"));
-          }
-        });
+      // Auto-height textarea
+      document.querySelectorAll('.premium-textarea').forEach(area => {
+        const resize = el => {
+          el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+        };
+        resize(area);
+        area.addEventListener('input', () => resize(area));
       });
     </script>
+
+
+    <!-- SKRYPTY ADMINA -->
+    <script>
+      async function sendUpdate(id, data) {
+        const res = await fetch('/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, data })
+        });
+        const json = await res.json();
+        if (!json.ok) alert("❌ Błąd zapisu: " + (json.error || "nieznany"));
+      }
+
+      // INPUTY: nazwa, cena, buttonText
+      document.querySelectorAll('.prod-input').forEach(inp => {
+        inp.addEventListener('change', () => {
+          sendUpdate(inp.dataset.id, { [inp.dataset.field]: inp.value });
+        });
+      });
+
+      // TEXTAREA: features
+      document.querySelectorAll('.prod-textarea').forEach(ta => {
+        ta.addEventListener('change', () => {
+          const lines = ta.value
+            .split('\n')
+            .map(l => l.trim())
+            .filter(l => l.length > 0);
+          sendUpdate(ta.dataset.id, { features: lines });
+        });
+      });
+
+      // SWITCH: hidden / unavailable
+      document.querySelectorAll('.prod-switch').forEach(sw => {
+        sw.addEventListener('change', () => {
+          sendUpdate(sw.dataset.id, { [sw.dataset.field]: sw.checked });
+        });
+      });
+
+      // USUWANIE PRODUKTU
+      document.querySelectorAll('[data-delete-id]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.dataset.deleteId;
+          if (!confirm(`Na pewno usunąć produkt ${id}?`)) return;
+
+          const res = await fetch('/delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+          });
+          const json = await res.json();
+          if (!json.ok) alert("❌ Błąd usuwania: " + (json.error || "nieznany"));
+          else location.reload();
+        });
+      });
+
+      // DODAWANIE PRODUKTU
+      document.getElementById('add-card').addEventListener('click', async () => {
+        const res = await fetch('/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({})
+        });
+        const json = await res.json();
+        if (!json.ok) alert("❌ Błąd dodawania produktu");
+        else location.reload();
+      });
+    </script>
+
   <% } %>
+
 </body>
 </html>

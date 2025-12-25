@@ -4,7 +4,7 @@ const fs = require("fs-extra");
 const path = require("path");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const ADMIN_PASSWORD = "qd-admin-2025";
 const ADMIN_LOGIN = "qdstudio";
@@ -28,148 +28,46 @@ app.use(
   })
 );
 
-// ----------------------
-// UZUPEŁNIONA TABLICA PRODUKTÓW
-// ----------------------
-const PRODUCTS = [
-  {
-    id: "product-1",
-    title: "Podstawowa Konfiguracja",
-    price: "15–30 zł",
-    features: [
-      "Bot z podstawowymi funkcjami",
-      "Moderacja i muzyka",
-      "Konfiguracja pod serwer",
-      "Wsparcie 48h"
-    ]
-  },
-  {
-    id: "product-2",
-    title: "Pakiet Serwer DC",
-    price: "25–50 zł",
-    features: [
-      "Pełna konfiguracja serwera",
-      "Wszystkie boty + backup",
-      "Role, kanały, permisje",
-      "Bonus: banner + ikona"
-    ]
-  },
-  {
-    id: "product-3",
-    title: "Bot Autorski",
-    price: "40–130 zł",
-    features: [
-      "Napisany od podstaw",
-      "Ekonomia, gry, API",
-      "Panel web (opcja)",
-      "Pełne prawa + kod"
-    ]
-  },
-  {
-    id: "product-4",
-    title: "Bot Anty-Nuke",
-    price: "10 zł",
-    features: [
-      "Licencja na 1 serwer Discord",
-      "Ochrona przed raid/nuke",
-      "Anty-usuwanie kanałów i ról",
-      "Whitelist właściciela",
-      "Backup + logi",
-      "Slash komendy",
-      "Podstawowa ochrona"
-    ]
-  },
-  {
-    id: "product-5",
-    title: "Własna Strona WWW",
-    price: "15–25 zł",
-    features: [
-      "Nowoczesny design",
-      "Responsywny layout",
-      "Szybkie ładowanie",
-      "Pełna personalizacja",
-      "Hosting w cenie (opcja)"
-    ]
-  },
-  {
-    id: "product-6",
-    title: "Pluginy Minecraft",
-    price: "15–25 zł",
-    features: [
-      "Pluginy na zamówienie",
-      "Spigot / Paper / Bukkit",
-      "Ekonomia, minigry, systemy",
-      "Optymalizacja wydajności",
-      "Pełna dokumentacja"
-    ]
-  },
-  {
-    id: "product-7",
-    title: "Skrypt FiveM",
-    price: "20–60 zł",
-    features: [
-      "Skrypt pisany pod Twój serwer",
-      "Optymalizacja pod wydajność",
-      "Integracja z ESX / QB-Core",
-      "Konfiguracja + instalacja",
-      "Możliwość rozbudowy na życzenie"
-    ]
-  },
-  {
-    id: "product-9",
-    title: "Ranga Premium",
-    price: "10 zł",
-    features: [
-      "Specjalna rola na Discordzie",
-      "Dostęp do kanałów premium",
-      "Priorytetowe wsparcie",
-      "Unikalny kolor nicku"
-    ]
-  },
-  {
-    id: "product-10",
-    title: "Ranga Premium Plus",
-    price: "20 zł",
-    features: [
-      "Wszystko z rangi Premium",
-      "Dostęp do ekskluzywnych materiałów",
-      "Wcześniejszy dostęp do nowych usług",
-      "Wyższy priorytet wsparcia"
-    ]
-  },
-  {
-    id: "product-11",
-    title: "Ranga Premium Ultra",
-    price: "35 zł",
-    features: [
-      "Wszystko z Premium Plus",
-      "Indywidualny kanał głosowy",
-      "Specjalny badge na serwerze",
-      "Najwyższy priorytet wsparcia 24/7"
-    ]
+// --------- helpers ---------
+
+async function loadStatus() {
+  try {
+    const data = await fs.readJson(STATUS_FILE);
+    if (!data.products) data.products = {};
+    return data;
+  } catch {
+    return { products: {} };
   }
-];
+}
 
-// ---------------------- ROUTING ----------------------
+async function saveStatus(status) {
+  await fs.writeJson(STATUS_FILE, status, { spaces: 2 });
+}
 
+// --------- routing ---------
+
+// Strona główna – oferta
 app.get("/", async (req, res) => {
-  const status = await fs.readJson(STATUS_FILE);
-  res.render("index", { products: PRODUCTS, status });
+  const status = await loadStatus();
+  const products = status.products || {};
+  res.render("index", { products });
 });
 
+// Panel admina
 app.get("/admin", async (req, res) => {
-  const status = await fs.readJson(STATUS_FILE);
+  const status = await loadStatus();
+  const products = status.products || {};
   const error = req.session.loginError;
   req.session.loginError = null;
 
   res.render("admin", {
     loggedIn: req.session.isAdmin,
-    products: PRODUCTS,
-    status,
+    products,
     error
   });
 });
 
+// Logowanie
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
@@ -183,29 +81,89 @@ app.post("/login", (req, res) => {
   res.redirect("/admin");
 });
 
+// Wylogowanie
 app.post("/logout", (req, res) => {
   req.session.destroy(() => {
     res.redirect("/admin");
   });
 });
 
+// Aktualizacja danych produktu (tytuł, cena, opis, button, hidden, unavailable)
 app.post("/update", async (req, res) => {
   if (!req.session.isAdmin)
     return res.status(401).json({ error: "Brak autoryzacji" });
 
-  const { data } = req.body;
+  const { id, data } = req.body;
+  if (!id || !data) {
+    return res.status(400).json({ error: "Brak id lub danych" });
+  }
 
   try {
-    const current = await fs.readJson(STATUS_FILE);
+    const status = await loadStatus();
+    if (!status.products[id]) status.products[id] = {};
 
-    for (const id in data) {
-      if (!current[id]) current[id] = {};
-      Object.assign(current[id], data[id]);
-    }
+    // Prosta aktualizacja pól
+    Object.assign(status.products[id], data);
 
-    await fs.writeJson(STATUS_FILE, current, { spaces: 2 });
+    await saveStatus(status);
     res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: "Błąd zapisu status.json" });
+  }
+});
 
+// Usuwanie produktu
+app.post("/delete", async (req, res) => {
+  if (!req.session.isAdmin)
+    return res.status(401).json({ error: "Brak autoryzacji" });
+
+  const { id } = req.body;
+  if (!id) return res.status(400).json({ error: "Brak id" });
+
+  try {
+    const status = await loadStatus();
+    if (status.products[id]) {
+      delete status.products[id];
+      await saveStatus(status);
+    }
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: "Błąd zapisu status.json" });
+  }
+});
+
+// Dodawanie nowego produktu (puste pola)
+app.post("/add", async (req, res) => {
+  if (!req.session.isAdmin)
+    return res.status(401).json({ error: "Brak autoryzacji" });
+
+  try {
+    const status = await loadStatus();
+    const products = status.products || {};
+
+    // prosty generator id: product-N
+    const ids = Object.keys(products)
+      .map(k => {
+        const m = k.match(/^product-(\d+)$/);
+        return m ? parseInt(m[1], 10) : null;
+      })
+      .filter(n => n !== null);
+    const max = ids.length ? Math.max(...ids) : 0;
+    const newId = `product-${max + 1}`;
+
+    products[newId] = {
+      title: "",
+      price: "",
+      features: [],
+      buttonText: "Wybierz pakiet",
+      hidden: false,
+      unavailable: false
+    };
+
+    status.products = products;
+    await saveStatus(status);
+
+    res.json({ ok: true, id: newId });
   } catch (err) {
     res.status(500).json({ error: "Błąd zapisu status.json" });
   }

@@ -194,3 +194,62 @@ h1 {
   font-weight: 500;
   box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
 }
+
+.premium-input,
+.premium-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fdf4ff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.25s ease;
+  box-shadow: inset 0 0 10px rgba(192, 132, 252, 0.15);
+  backdrop-filter: blur(8px);
+}
+
+.premium-input::placeholder,
+.premium-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.premium-input:focus,
+.premium-textarea:focus {
+  border-color: rgba(192, 132, 252, 0.7);
+  box-shadow:
+    0 0 12px rgba(192, 132, 252, 0.5),
+    0 0 20px rgba(249, 115, 22, 0.4),
+    inset 0 0 12px rgba(192, 132, 252, 0.25);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.premium-textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+/* --- PREMIUM TEXTBOXES AUTO WIDTH + AUTO HEIGHT --- */
+
+.card label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+/* Stała szerokość dopasowana do kafelka */
+.premium-input,
+.premium-textarea {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Auto-height textarea */
+.premium-textarea {
+  overflow: hidden;
+  resize: none; /* blokuje manualne rozciąganie */
+  min-height: 60px;
+  line-height: 1.4;
+}

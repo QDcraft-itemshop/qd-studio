@@ -1,1 +1,140 @@
-{}
+{
+  "products": {
+    "product-1": {
+      "title": "Podstawowa Konfiguracja",
+      "price": "15–30 zł",
+      "features": [
+        "Bot z podstawowymi funkcjami",
+        "Moderacja i muzyka",
+        "Konfiguracja pod serwer",
+        "Wsparcie 48h"
+      ],
+      "buttonText": "Zamów Teraz",
+      "hidden": false,
+      "unavailable": false
+    },
+    "product-2": {
+      "title": "Pakiet Serwer DC",
+      "price": "25–50 zł",
+      "features": [
+        "Pełna konfiguracja serwera",
+        "Wszystkie boty + backup",
+        "Role, kanały, permisje",
+        "Bonus: banner + ikona"
+      ],
+      "buttonText": "Wybierz Pakiet",
+      "hidden": false,
+      "unavailable": false
+    },
+    "product-3": {
+      "title": "Bot Autorski",
+      "price": "40–130 zł",
+      "features": [
+        "Napisany od podstaw",
+        "Ekonomia, gry, API",
+        "Panel web (opcja)",
+        "Pełne prawa + kod"
+      ],
+      "buttonText": "Zapytaj o Szczegóły",
+      "hidden": false,
+      "unavailable": false
+    },
+    "product-4": {
+      "title": "Bot Anty-Nuke",
+      "price": "10 zł",
+      "features": [
+        "Licencja na 1 serwer Discord",
+        "Ochrona przed raid/nuke",
+        "Anty-usuwanie kanałów i ról",
+        "Whitelist właściciela",
+        "Backup + logi",
+        "Slash komendy",
+        "Podstawowa ochrona"
+      ],
+      "buttonText": "Zabezpiecz Teraz",
+      "hidden": false,
+      "unavailable": false
+    },
+    "product-5": {
+      "title": "Własna Strona WWW",
+      "price": "15–25 zł",
+      "features": [
+        "Nowoczesny design",
+        "Responsywny layout",
+        "Szybkie ładowanie",
+        "Pełna personalizacja",
+        "Hosting w cenie (opcja)"
+      ],
+      "buttonText": "Zamów Stronę",
+      "hidden": false,
+      "unavailable": false
+    },
+    "product-6": {
+      "title": "Pluginy Minecraft",
+      "price": "15–25 zł",
+      "features": [
+        "Pluginy na zamówienie",
+        "Spigot / Paper / Bukkit",
+        "Ekonomia, minigry, systemy",
+        "Optymalizacja wydajności",
+        "Pełna dokumentacja"
+      ],
+      "buttonText": "Zamów Plugin",
+      "hidden": false,
+      "unavailable": false
+    },
+    "product-7": {
+      "title": "Skrypt FiveM",
+      "price": "20–60 zł",
+      "features": [
+        "Skrypt pisany pod Twój serwer",
+        "Optymalizacja pod wydajność",
+        "Integracja z ESX / QB-Core",
+        "Konfiguracja + instalacja",
+        "Możliwość rozbudowy na życzenie"
+      ],
+      "buttonText": "Zamów Skrypt",
+      "hidden": false,
+      "unavailable": false
+    },
+    "product-9": {
+      "title": "Ranga Premium",
+      "price": "10 zł",
+      "features": [
+        "Specjalna rola na Discordzie",
+        "Dostęp do kanałów premium",
+        "Priorytetowe wsparcie",
+        "Unikalny kolor nicku"
+      ],
+      "buttonText": "Kup Premium",
+      "hidden": false,
+      "unavailable": false
+    },
+    "product-10": {
+      "title": "Ranga Premium Plus",
+      "price": "20 zł",
+      "features": [
+        "Wszystko z rangi Premium",
+        "Dostęp do ekskluzywnych materiałów",
+        "Wcześniejszy dostęp do nowych usług",
+        "Wyższy priorytet wsparcia"
+      ],
+      "buttonText": "Kup Premium Plus",
+      "hidden": false,
+      "unavailable": false
+    },
+    "product-11": {
+      "title": "Ranga Premium Ultra",
+      "price": "35 zł",
+      "features": [
+        "Wszystko z Premium Plus",
+        "Indywidualny kanał głosowy",
+        "Specjalny badge na serwerze",
+        "Najwyższy priorytet wsparcia 24/7"
+      ],
+      "buttonText": "Kup Premium Ultra",
+      "hidden": false,
+      "unavailable": false
+    }
+  }
+}
